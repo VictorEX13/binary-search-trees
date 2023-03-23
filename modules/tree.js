@@ -102,6 +102,44 @@ class Tree {
       throw new Error("There is no node in the tree!");
     }
   }
+
+  preorder(root, cb, arr = []) {
+    if (!root) return;
+
+    cb ? cb(root) : arr.push(root.data);
+    this.preorder(root.left, cb, arr);
+    this.preorder(root.right, cb, arr);
+
+    if (!cb) {
+      return arr;
+    }
+  }
+
+  inorder(root, cb, arr = []) {
+    if (!root) return;
+
+    this.inorder(root.left, cb, arr);
+    cb ? cb(root) : arr.push(root.data);
+    this.inorder(root.right, cb, arr);
+
+    if (!cb) {
+      return arr;
+    }
+  }
+
+  postorder(root, cb, arr = []) {
+    if (!root) {
+      return;
+    }
+
+    this.postorder(root.left, cb, arr);
+    this.postorder(root.right, cb, arr);
+    cb ? cb(root) : arr.push(root.data);
+
+    if (!cb) {
+      return arr;
+    }
+  }
 }
 
 export default Tree;
