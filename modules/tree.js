@@ -61,6 +61,24 @@ class Tree {
 
     return treeRoot;
   }
+
+  find(value) {
+    if (this.root) {
+      let currentRoot = { ...this.root };
+
+      while (currentRoot) {
+        if (value < currentRoot.data) {
+          currentRoot = currentRoot.left;
+        } else if (value > currentRoot.data) {
+          currentRoot = currentRoot.right;
+        } else {
+          break;
+        }
+      }
+
+      return currentRoot;
+    }
+  }
 }
 
 export default Tree;
