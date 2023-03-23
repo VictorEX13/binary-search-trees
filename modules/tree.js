@@ -79,6 +79,29 @@ class Tree {
       return currentRoot;
     }
   }
+
+  levelOrder(cb) {
+    if (this.root) {
+      let currentRoot = { ...this.root };
+      const queue = [];
+      const ifCbNotProvided = [];
+
+      while (currentRoot) {
+        if (currentRoot.left) queue.push(currentRoot.left);
+        if (currentRoot.right) queue.push(currentRoot.right);
+
+        cb ? cb(currentRoot) : ifCbNotProvided.push(currentRoot.data);
+        currentRoot = queue[0];
+        queue.shift();
+      }
+
+      if (!cb) {
+        return ifCbNotProvided;
+      }
+    } else {
+      throw new Error("There is no node in the tree!");
+    }
+  }
 }
 
 export default Tree;
