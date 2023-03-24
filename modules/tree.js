@@ -174,6 +174,18 @@ class Tree {
       throw new Error("There is no node in the tree!");
     }
   }
+
+  rebalance() {
+    if (this.root) {
+      if (!this.isBalanced()) {
+        const nodesArr = this.inorder(this.root);
+
+        this.root = this.buildTree(nodesArr)
+      }
+    } else {
+      throw new Error("There is no node in the tree!");
+    }
+  }
 }
 
 export default Tree;
