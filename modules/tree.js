@@ -8,11 +8,13 @@ class Tree {
   buildTree(arr) {
     if (arr.length === 0) return null;
 
-    const mid = Math.floor(arr.length / 2);
-    const rootNode = new Node(arr[mid]);
+    const sortedArray = [...new Set(arr)].sort((x, y) => x - y);
 
-    rootNode.left = this.buildTree(arr.slice(0, mid));
-    rootNode.right = this.buildTree(arr.slice(mid + 1));
+    const mid = Math.floor(sortedArray.length / 2);
+    const rootNode = new Node(sortedArray[mid]);
+
+    rootNode.left = this.buildTree(sortedArray.slice(0, mid));
+    rootNode.right = this.buildTree(sortedArray.slice(mid + 1));
 
     return rootNode;
   }
