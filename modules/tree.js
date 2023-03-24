@@ -56,82 +56,70 @@ class Tree {
       }
 
       treeRoot.data = inorderSuccessor;
-      treeRoot.right = this.delete(treeRoot.right, inorderSuccessor);
+      treeRoot.right = this.delete(inorderSuccessor, treeRoot.right);
     }
 
     return treeRoot;
   }
 
-  find(value) {
-    if (this.root) {
-      let currentRoot = { ...this.root };
+  find(value, root = this.root) {
+    if (!root) return;
 
-      while (currentRoot) {
-        if (value < currentRoot.data) {
-          currentRoot = currentRoot.left;
-        } else if (value > currentRoot.data) {
-          currentRoot = currentRoot.right;
-        } else if (value === currentRoot.data) {
-          return currentRoot;
-        }
-      }
-    }
-  }
+    if (value === root.data) return root;
 
-  levelOrder(cb) {
-    if (this.root) {
-      let currentRoot = { ...this.root };
-      const queue = [];
-      const ifCbNotProvided = [];
-
-      while (currentRoot) {
-        if (currentRoot.left) queue.push(currentRoot.left);
-        if (currentRoot.right) queue.push(currentRoot.right);
-
-        cb ? cb(currentRoot) : ifCbNotProvided.push(currentRoot.data);
-        currentRoot = queue[0];
-        queue.shift();
-      }
-
-      if (!cb) {
-        return ifCbNotProvided;
-      }
+    if (value < root.data) {
+      return this.find(value, root.left);
     } else {
-      throw new Error("There is no node in the tree!");
+      return this.find(value, root.right);
     }
   }
 
-  preorder(root, cb, arr = []) {
+  levelOrder(cb, root = this.root, queue = [this.root], arr = []) {
     if (!root) return;
 
+    if (root.left) queue.push(root.left);
+    if (root.right) queue.push(root.right);
+
     cb ? cb(root) : arr.push(root.data);
-    this.preorder(root.left, cb, arr);
-    this.preorder(root.right, cb, arr);
+    queue.shift();
+    this.levelOrder(cb, queue.length && queue[0], queue, arr);
 
     if (!cb) {
       return arr;
     }
   }
 
-  inorder(root, cb, arr = []) {
+  preorder(cb, root = this.root, arr = []) {
     if (!root) return;
 
-    this.inorder(root.left, cb, arr);
     cb ? cb(root) : arr.push(root.data);
-    this.inorder(root.right, cb, arr);
+    this.preorder(cb, root.left, arr);
+    this.preorder(cb, root.right, arr);
 
     if (!cb) {
       return arr;
     }
   }
 
-  postorder(root, cb, arr = []) {
+  inorder(cb, root = this.root, arr = []) {
+    if (!root) return;
+
+    this.inorder(cb, root.left, arr);
+    cb ? cb(root) : arr.push(root.data);
+    this.inorder(cb, root.right, arr);
+
+    if (!cb) {
+      return arr;
+    }
+  }
+
+  postorder(cb, root = this.root, arr = []) {
     if (!root) {
       return;
     }
 
-    this.postorder(root.left, cb, arr);
-    this.postorder(root.right, cb, arr);
+    this.postorder(cb, root.left, arr);
+    this.postorder(cb, root.right, arr);
     cb ? cb(root) : arr.push(root.data);
 
     if (!cb) {
@@ -139,13 +127,17 @@ class Tree {
     }
   }
 
-  height(selectedNodeData, root = this.find(selectedNodeData)) {
-    if (!root) return -1;
+  height(selectedNodeData) {
+    const root = this.find(selectedNodeData);
 
-    const left = this.height(selectedNodeData, root.left);
-    const right = this.height(selectedNodeData, root.right);
+    if (!root) {
+      return -1;
+    } else {
+      const left = this.height(root.left?.data);
+      const right = this.height(root.right?.data);
 
-    return Math.max(left, right) + 1;
+      return Math.max(left, right) + 1;
+    }
   }
 
   depth(selectedNodeData, root = this.root) {
@@ -178,9 +170,9 @@ class Tree {
   rebalance() {
     if (this.root) {
       if (!this.isBalanced()) {
-        const nodesArr = this.inorder(this.root);
+        const nodesArr = this.inorder();
 
-        this.root = this.buildTree(nodesArr)
+        this.root = this.buildTree(nodesArr);
       }
     } else {
       throw new Error("There is no node in the tree!");
