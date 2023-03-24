@@ -149,6 +149,22 @@ class Tree {
 
     return Math.max(left, right) + 1;
   }
+
+  depth(selectedNodeData, root = this.root) {
+    if (!root) return -1;
+
+    let nodeDepth = -1;
+
+    if (
+      root.data === selectedNodeData ||
+      (nodeDepth = this.depth(selectedNodeData, root.left)) >= 0 ||
+      (nodeDepth = this.depth(selectedNodeData, root.right)) >= 0
+    ) {
+      nodeDepth++;
+    }
+
+    return nodeDepth;
+  }
 }
 
 export default Tree;
