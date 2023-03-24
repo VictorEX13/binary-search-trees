@@ -140,6 +140,15 @@ class Tree {
       return arr;
     }
   }
+
+  height(selectedNodeData, root = this.find(selectedNodeData)) {
+    if (!root) return -1;
+
+    const left = this.height(selectedNodeData, root.left);
+    const right = this.height(selectedNodeData, root.right);
+
+    return Math.max(left, right) + 1;
+  }
 }
 
 export default Tree;
