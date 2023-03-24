@@ -17,30 +17,30 @@ class Tree {
     return rootNode;
   }
 
-  insert(treeRoot, value) {
+  insert(value, treeRoot = this.root) {
     if (!treeRoot) {
       treeRoot = new Node(value);
       return treeRoot;
     }
 
     if (value < treeRoot.data) {
-      treeRoot.left = this.insert(treeRoot.left, value);
+      treeRoot.left = this.insert(value, treeRoot.left);
     } else if (value > treeRoot.data) {
-      treeRoot.right = this.insert(treeRoot.right, value);
+      treeRoot.right = this.insert(value, treeRoot.right);
     }
 
     return treeRoot;
   }
 
-  delete(treeRoot, value) {
+  delete(value, treeRoot = this.root) {
     if (!treeRoot) {
       return treeRoot;
     }
 
     if (value < treeRoot.data) {
-      treeRoot.left = this.delete(treeRoot.left, value);
+      treeRoot.left = this.delete(value, treeRoot.left);
     } else if (value > treeRoot.data) {
-      treeRoot.right = this.delete(treeRoot.right, value);
+      treeRoot.right = this.delete(value, treeRoot.right);
     } else {
       if (!treeRoot.left) {
         return treeRoot.right;
@@ -71,12 +71,10 @@ class Tree {
           currentRoot = currentRoot.left;
         } else if (value > currentRoot.data) {
           currentRoot = currentRoot.right;
-        } else {
-          break;
+        } else if (value === currentRoot.data) {
+          return currentRoot;
         }
       }
-
-      return currentRoot;
     }
   }
 
@@ -164,6 +162,17 @@ class Tree {
     }
 
     return nodeDepth;
+  }
+
+  isBalanced() {
+    if (this.root) {
+      const leftHeight = this.height(this.root.left?.data);
+      const rightHeight = this.height(this.root.right?.data);
+
+      return Math.abs(leftHeight - rightHeight) <= 1;
+    } else {
+      throw new Error("There is no node in the tree!");
+    }
   }
 }
 
